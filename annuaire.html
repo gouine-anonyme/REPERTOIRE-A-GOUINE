@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Répertoire à gouines</title>
+<style>
+  :root { --noir: #0b0809; --creme: #f2ead7; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--noir); overflow: hidden; }
+  #mur { position: fixed; inset: 0; line-height: 0; font-size: 0; }
+  #mur img { display: block; float: left; }
+  .retour {
+    position: fixed; inset: 0; z-index: 2; text-indent: -9999px; overflow: hidden;
+  }
+  .retour:focus-visible { outline: 3px solid var(--creme); outline-offset: -6px; }
+</style>
+</head>
+<body>
+  <div id="mur" aria-hidden="true"></div>
+  <a class="retour" href="index.html">Retour à l'accueil</a>
+
+<script>
+  // Répète l'image en grosses tuiles, ajustées pour remplir exactement la largeur
+  // de l'écran, et autant de rangées que nécessaire pour remplir la hauteur.
+  const mur = document.getElementById('mur');
+  const RATIO = 447 / 203;   // hauteur / largeur de l'image
+  const TAILLE = 0.5;        // hauteur visée d'une tuile : 50 % de l'écran (change cette valeur pour des tuiles plus grosses ou plus petites)
+
+  function remplir() {
+    const L = window.innerWidth, H = window.innerHeight;
+    const colonnes = Math.max(1, Math.round(L / ((H * TAILLE) / RATIO)));
+    const w = L / colonnes;
+    const h = w * RATIO;
+    const rangees = Math.ceil(H / h);
+
+    mur.replaceChildren();
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < colonnes * rangees; i++) {
+      const img = document.createElement('img');
+      img.src = 'arbre.png';
+      img.alt = '';
+      img.style.width = w + 'px';
+      img.style.height = h + 'px';
+      frag.appendChild(img);
+    }
+    mur.appendChild(frag);
+  }
+
+  let attente;
+  window.addEventListener('resize', () => { clearTimeout(attente); attente = setTimeout(remplir, 100); });
+  remplir();
+</script>
+</body>
+</html>
